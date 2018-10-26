@@ -1,5 +1,17 @@
 <?php
 
+function yesORno( $number ){
+	
+	if($number == 1)
+	{ 
+		return 'Tak'; 
+	}else{		
+		return 'Nie';
+	}
+	
+}//end function yesORnot
+
+
 function connectDB(){
 	//DATA TO CONNECTION DATABASE 
 	$db = mysql_connect("localhost","root","");

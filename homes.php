@@ -27,24 +27,38 @@
 				define('NUMBER_OF_RESULT_PER_PAGE', 30);
 				connectDB();
 				
-				if(isset($_GET['page']) != true ){
-					$_GET['page'] = 0;
-				}
-				$_GET['number'] = 1;
-				
 				$sql = "SELECT 	 pc.idComputers 'ID_PC'
 						,pc.Producer 'Producent'
 						,pc.Model 'Model'
 						,pc.ComputerName 'Nazwa'
 						,pc.SerialNumber 'SN'
+						,pc.OperatingSystem 'System'
+						,pc.idPerson 'ID_User'
 						,p.Surname 'Nazwisko'
 						,p.Name 'Imie'
+						,pc.idStatusComputer 'ID_Status'
 						,s.Status 'Status'
 						,pc.Encrypted 'Czy_zaszyfrowany'
+						,pc.IdentifierBitLocker 'Identyfikatro_BitLocker'
+						,pc.RecoveryKeyBitLocker 'Klucz_BitLocker'
+						,pc.PasswordEncrypted 'Haslo'
+						,pc.DateEncrypted 'Data_szyfrowania'
+						,pc.MacEthernet 'Mac_ETH'
+						,pc.MacWiFi 'Mac_ETH2'
+						,pc.idOffice 'ID_Office'
+						,o.KeyOnline 'Klucz_offica'
+						,o.DateAdd 'Data_dodania'
+						,o.Office 'Office'
+						,o.Version 'Wersja'
+						,pc.idInvoice 'ID_faktury'
+						,i.NumberInvoice 'Nr_faktury'
+						,i.Date 'Data_faktury'
+						,i.GrosPrice 'Cena'
 				FROM computers pc LEFT JOIN person p ON pc.idPerson=p.idPerson
 								  LEFT JOIN statuscomputer s ON pc.idStatusComputer=s.idStatusComputer
-				LIMIT ".mysql_escape_string((int)$_GET['page']*NUMBER_OF_RESULT_PER_PAGE).",".NUMBER_OF_RESULT_PER_PAGE;
-				$counter = $_GET['page']*NUMBER_OF_RESULT_PER_PAGE+1;
+								  LEFT JOIN office o ON pc.idOffice=o.idOffice
+								  LEFT JOIN invoice i ON pc.idInvoice=i.idInvoice
+				WHERE pc.idComputers = ".$_GET['number'];				
 				
 				$query = mysql_query($sql);
 				
@@ -60,36 +74,24 @@
 							<td>Szyfrowany</td>
 						</tr>';
 				
-				while( $row = mysql_fetch_assoc($query))
-				{
+				$row = mysql_fetch_assoc($query);
 					echo '
-						
+						<a href="?&number='.$row['ID_PC'].'">
 						<tr>
-							<td>'.$counter.'</td>
-							<td><a href="homes.php?number='.$row['ID_PC'].'">'.$row['Producent'].' '.$row['Model'].'</a></td>
-							<td><a href="homes.php?number='.$row['ID_PC'].'">'.$row['SN'].'</a></td>
-							<td><a href="homes.php?number='.$row['ID_PC'].'">'.$row['Nazwa'].'</a></td>
-							<td><a href="homes.php?number='.$row['ID_PC'].'">'.$row['Nazwisko'].'</a></td>
-							<td><a href="homes.php?number='.$row['ID_PC'].'">'.$row['Imie'].'</a></td>
+							<td>'.$row['Producent'].' '.$row['Model'].'</td>
+							<td>'.$row['SN'].'</td>
+							<td>'.$row['Nazwa'].'</td>
+							<td>'.$row['Nazwisko'].'</td>
+							<td>'.$row['Imie'].'</td>
 							<td>'.$row['Status'].'</td>
 							<td>'.yesORno($row['Czy_zaszyfrowany']).'</td>
-						</tr>';
-					$counter++;
-				}
+						</tr>
+						</a>';
+
+
 				echo '</table>';
 				
-				$sql = "SELECT COUNT(*) FROM computers Ilosc";
-				$query = mysql_query($sql);
-				list( $iloscWpisow ) = mysql_fetch_row($query);
-				
-				echo '<center>';
-				
-				for( $i = 0; $i <= floor($iloscWpisow/NUMBER_OF_RESULT_PER_PAGE); $i++){
-					echo ' <a href="?page='.($i).'"><button>'.($i+1).'</button></a> ';
-				}
-				
-				echo '</center>';
-				
+			
 				mysql_free_result($query);
 				mysql_close();
 			?>
