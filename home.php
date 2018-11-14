@@ -1,13 +1,13 @@
 <?php
-	require_once "function.php";
+	require_once "PHP/function.php";
+	include_once "PHP/config.php";
 	
 ?>
 <!DOCTYPE html>
 <html lang="pl-PL">
 <head>
 	<?php
-		include_once "html_head.html";
-		
+		include_once PATH_TO_HTML_HEAD;		
 	?>
 	<title>System Ewidencji - Home</title>
 </head>
@@ -17,7 +17,7 @@
 	
 		<div id="BAR">
 			<?php 
-				include_once "html_bar.html";
+				include_once PATH_TO_HTML_BAR;
 			?>
 		</div>
 		
@@ -69,8 +69,8 @@
 							<td><a href="homes.php?number='.$row['ID_PC'].'">'.$row['Producent'].' '.$row['Model'].'</a></td>
 							<td><a href="homes.php?number='.$row['ID_PC'].'">'.$row['SN'].'</a></td>
 							<td><a href="homes.php?number='.$row['ID_PC'].'">'.$row['Nazwa'].'</a></td>
-							<td><a href="homes.php?number='.$row['ID_PC'].'">'.$row['Nazwisko'].'</a></td>
-							<td><a href="homes.php?number='.$row['ID_PC'].'">'.$row['Imie'].'</a></td>
+							<td>'.$row['Nazwisko'].'</td>
+							<td>'.$row['Imie'].'</td>
 							<td>'.$row['Status'].'</td>
 							<td>'.yesORno($row['Czy_zaszyfrowany']).'</td>
 						</tr>';
@@ -97,7 +97,7 @@
 		
 		<div id="FOOTER">
 			<?php
-				include_once "html_footer.html";
+				include_once PATH_TO_HTML_FOOTER;
 			?>
 		</div>
 	</div>

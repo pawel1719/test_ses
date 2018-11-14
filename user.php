@@ -1,12 +1,13 @@
 <?php
-	require_once "function.php";
+	require_once "PHP/function.php";
+	include_once "PHP/config.php";
 	
 ?>
 <!DOCTYPE html>
 <html lang="pl-PL">
 <head>
 	<?php
-		include_once "html_head.html";
+		include_once PATH_TO_HTML_HEAD;
 		
 	?>
 	<title>System Ewidencji - Użytkownicy</title>
@@ -17,7 +18,7 @@
 	
 		<div id="BAR">
 			<?php 
-				include_once "html_bar.html";
+				include_once PATH_TO_HTML_BAR;
 			?>
 		</div>
 		
@@ -115,7 +116,7 @@
 		
 		<div id="FOOTER">
 			<?php
-				include_once "html_footer.html";
+				include_once PATH_TO_HTML_FOOTER;
 			?>
 		</div>
 	</div>

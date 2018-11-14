@@ -1,8 +1,11 @@
- <!DOCTYPE html>
+<?php
+	include_once "PHP/config.php";
+?>
+<!DOCTYPE html>
 <html lang="pl-PL">
 <head>
 	<?php 	
-		include_once "html_head.html"; 
+		include_once PATH_TO_HTML_HEAD; 
 	?>
 	<title>SESK - System Ewidencji Sprzętu Komputerowego</title>
 	
@@ -24,8 +27,8 @@
 		</div>
 		
 		<div id="FOOTER">
-			<?php
-				include_once "html_footer.html";
+			<?php 
+				include_once PATH_TO_HTML_FOOTER;
 			?>
 		</div>
 	</div>
