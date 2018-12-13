@@ -4,7 +4,7 @@
 		
 	if( isset($_POST['comments']))
 	{
-		mysql_query(addComments( $_POST['user'], $_POST['number'], $_POST['comments']));
+		mysql_query(addCommentsForComputer( $_POST['user'], $_POST['number'], $_POST['comments']));
 		$no = $_POST['number'];
 		
 		echo $_POST['user'];

@@ -33,16 +33,18 @@
 				$_GET['number'] = 1;
 				
 				$sql = "SELECT 	 pc.idComputers 'ID_PC'
-						,pc.Producer 'Producent'
-						,pc.Model 'Model'
-						,pc.ComputerName 'Nazwa'
-						,pc.SerialNumber 'SN'
-						,p.Surname 'Nazwisko'
-						,p.Name 'Imie'
-						,s.Status 'Status'
-						,pc.Encrypted 'Czy_zaszyfrowany'
-				FROM computers pc LEFT JOIN person p ON pc.idPerson=p.idPerson
-								  LEFT JOIN statuscomputer s ON pc.idStatusComputer=s.idStatusComputer
+						        ,prod.Producer 'Producent'
+						        ,model.Producer 'Model'
+						        ,pc.ComputerName 'Nazwa'
+						        ,pc.SerialNumber 'SN'
+						        ,os.Surname 'Nazwisko'
+						        ,os.Name 'Imie'
+						        ,stat.Status 'Status'
+						        ,pc.Encrypted 'Czy_zaszyfrowany'
+						FROM computers pc LEFT JOIN producerdevice prod ON pc.idProducerDevice=prod.idProducerDevice
+				  LEFT JOIN modelsdevice model ON pc.idModelsDevice=model.idModelsDevice
+                  LEFT JOIN person os ON pc.idPerson=os.idPerson
+                  LEFT JOIN statuscomputer stat ON pc.idStatusComputer=stat.idStatusComputer
 				LIMIT ".mysql_escape_string((int)$_GET['page']*NUMBER_OF_RESULT_PER_PAGE).",".NUMBER_OF_RESULT_PER_PAGE;
 				$counter = $_GET['page']*NUMBER_OF_RESULT_PER_PAGE+1;
 				

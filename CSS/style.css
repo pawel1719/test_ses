@@ -84,7 +84,7 @@ body{
 	overflow: auto;
 }
 #CONTENT_TAB{
-	height: calc(100% - 200px);
+	min-height: calc(100% - 200px);
 	padding: 0 100px;
 	overflow: auto;
 }
@@ -177,6 +177,11 @@ body{
 	font-size: 1.1em;
 	font-weight: normal;
 }
+#PC_EDIT table form {
+	width: 250px;
+	color: #FFF;
+}
+
 
 .empty{
 	display: none;

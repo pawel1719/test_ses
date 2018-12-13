@@ -34,16 +34,18 @@
 				}
 				
 				//QUERY TO DATABASE 
-				$SQL = "SELECT 	Surname 'Nazwisko'
-						,Name 'Imie'
-						,d.Department 'Departament'
-						,c.NameCity 'Miasto'
-						,NumberPhone 'Telefon'
-						,DateEmployment  
-						,Work
-						,DateRelease 
-					FROM person p LEFT JOIN department d ON p.idDepartment=d.idDepartment
-								  LEFT JOIN city c ON p.idCity=c.idCity
+				$SQL = "SELECT 	 os.idPerson 'ID_Osoba'
+								,os.Surname 'Nazwisko'
+								,os.Name 'Imie'
+								,d.Department 'Departament'
+						        ,os.Position 'Stanowisko'
+								,c.NameCity 'Miasto'
+								,os.NumberPhone 'Telefon'
+								,os.DateEmployment 'Data_zatrudnienia'
+								,os.Work 'CzyPracuje'
+								,os.DateRelease 'Data_zwolnienia'
+					FROM person OS LEFT JOIN department d ON os.idDepartment=d.idDepartment
+								   LEFT JOIN city c ON os.idCity=c.idCity
 					ORDER BY Surname, Name ASC
 					LIMIT ".mysql_escape_string((int)$_GET['page']*NUMBER_OF_RESULTS_PER_PAGE).",".NUMBER_OF_RESULTS_PER_PAGE;
 				$counter = $_GET['page']*NUMBER_OF_RESULTS_PER_PAGE+1;
@@ -55,6 +57,7 @@
 							<td>Imię</td>
 							<td>Nazwisko</td>
 							<td>Departament</td>
+							<td>Stanowisko</td>
 							<td>Miasto</td>
 							<td>Nr. telefonu</td>
 							<td>Data zatrudnienia</td>
@@ -68,10 +71,11 @@
 					echo '<td>'.$row['Nazwisko'].'</td>';
 					echo '<td>'.$row['Imie'].'</td>';
 					echo '<td>'.$row['Departament'].'</td>';
+					echo '<td>'.$row['Stanowisko'].'</td>';
 					echo '<td>'.$row['Miasto'].'</td>';
 					echo '<td>'.$row['Telefon'].'</td>';
-					echo '<td>'.$row['DateEmployment'].'</td>';
-					echo '<td>'.$row['DateRelease'].'</td>';
+					echo '<td>'.$row['Data_zatrudnienia'].'</td>';
+					echo '<td>'.$row['Data_zwolnienia'].'</td>';
 					$counter++;
 					echo '</tr>';
 				}

@@ -3,6 +3,11 @@ function nextTabPC(){
 	document.getElementById("CONTENT_TAB").innerHTML = x;
 }
 
+function nextTabPC_Edit(){
+	var x = document.getElementById('PC_EDIT').innerHTML;
+	document.getElementById("CONTENT_TAB").innerHTML = x;
+}
+
 function nextTabPERSON(){
 	var x = document.getElementById('Person').innerHTML;
 	document.getElementById("CONTENT_TAB").innerHTML = x;

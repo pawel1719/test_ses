@@ -39,36 +39,50 @@
 				connectDB();
 				
 				$sql = "SELECT 	 pc.idComputers 'ID_PC'
-						,pc.Producer 'Producent'
-						,pc.Model 'Model'
-						,pc.ComputerName 'Nazwa'
-						,pc.SerialNumber 'SN'
-						,pc.OperatingSystem 'System'
-						,pc.idPerson 'ID_User'
-						,p.Surname 'Nazwisko'
-						,p.Name 'Imie'
-						,pc.idStatusComputer 'ID_Status'
-						,s.Status 'Status'
-						,pc.Encrypted 'Czy_zaszyfrowany'
-						,pc.IdentifierBitLocker 'Identyfikatro_BitLocker'
-						,pc.RecoveryKeyBitLocker 'Klucz_BitLocker'
-						,pc.PasswordEncrypted 'Haslo'
-						,pc.DateEncrypted 'Data_szyfrowania'
-						,pc.MacEthernet 'Mac_ETH'
-						,pc.MacWiFi 'Mac_ETH2'
-						,pc.idOffice 'ID_Office'
-						,o.KeyOnline 'Klucz_offica'
-						,o.DateAdd 'Data_dodania'
-						,o.Office 'Office'
-						,o.Version 'Wersja'
-						,pc.idInvoice 'ID_faktury'
-						,i.NumberInvoice 'Nr_faktury'
-						,i.Date 'Data_faktury'
-						,i.GrosPrice 'Cena'
-				FROM computers pc LEFT JOIN person p ON pc.idPerson=p.idPerson
-								  LEFT JOIN statuscomputer s ON pc.idStatusComputer=s.idStatusComputer
-								  LEFT JOIN office o ON pc.idOffice=o.idOffice
-								  LEFT JOIN invoice i ON pc.idInvoice=i.idInvoice
+						        ,typ.Type 'Urzadzenie'
+						        ,prod.Producer  'Producent'
+						        ,model.Producer 'Model'
+						        ,pc.ComputerName 'Nazwa'
+						        ,pc.SerialNumber 'SN'
+						        ,os.Name  'System'
+						        ,pc.idPerson 'Id_Osoby'
+						        ,per.Surname 'Nazwisko'
+						        ,per.Name 'Imie'
+						        ,stat.Status 'Status'
+						        ,pc.Encrypted 'Czy_zaszyfrowany'
+						        ,pc.IdentifierBitLocker 'Identyfikatro_BitLocker'
+						        ,pc.RecoveryKeyBitLocker 'Klucz_BitLocker'
+						        ,pc.PasswordEncrypted 'Haslo'
+						        ,pc.DateEncrypted 'Data_szyfrowania'
+						        ,pc.MacEthernet 'Mac_ETH'
+						        ,pc.MacWiFi 'Mac_ETH2'
+						        ,pc.idOffice 'ID_Office'
+						        ,ms.KeyOffline  'Klucz_offica'
+						        ,ms.DateAdd 'Data_dodania'
+						        ,ms.Office 'Office'
+						        ,ms.Version 'Wersja'
+						        ,pc.idInvoice 'ID_faktury'
+						        ,fv.NumberInvoice 'Nr_faktury'
+						        ,fv.Date 'Data_faktury'
+						        ,fv.GrosPrice 'Cena'
+						        ,pc.Warranty 'Gwarancja'
+						        ,pc.CPU 'Procesor'
+						        ,pc.NumberOfCores 'Liczba_watkow'
+						        ,pc.RAMMemory 'Ilosc_RAMu'
+						        ,pc.HardDriveType_1 'Rodzaj_dysku_1'
+						        ,pc.HardDriveCapacity_1 'Rozmiar_dysku_1'
+						        ,pc.HardDriveType_2 'Rodzaj_dysku_2'
+						        ,pc.HardDriveCapacity_2 'Rozmiar_dysku_2'
+						        ,pc.Grapfic 'Grafika'
+						        ,pc.DisplayResolution 'Rozdzielczosc'
+						FROM computers pc LEFT JOIN typeofdevice typ ON pc.idTypeOfDevice=typ.idTypeOfDevice
+				  LEFT JOIN producerdevice prod ON  pc.idProducerDevice=prod.idProducerDevice
+                  LEFT JOIN modelsdevice model ON pc.idModelsDevice=model.idModelsDevice
+                  LEFT JOIN OperatingSystem os ON pc.OperatingSystem=os.idOperatingSystem
+                  LEFT JOIN person per ON pc.idPerson=per.idPerson
+                  LEFT JOIN statuscomputer stat ON pc.idStatusComputer=stat.idStatusComputer
+                  LEFT JOIN office ms ON pc.idOffice=ms.idOffice
+                  LEFT JOIN invoice fv ON pc.idInvoice=fv.idInvoice
 				WHERE pc.idComputers = ".$_GET['number'];				
 				
 				
@@ -85,12 +99,20 @@
 							<td>'.$row['Nazwa'].'</td>
 						</tr>
 						<tr>
+							<td>Producent</td>
+							<td>'.$row['Producent'].'</td>
+						</tr>
+						<tr>
 							<td>Model</td>
 							<td>'.$row['Model'].'</td>
 						</tr>
 						<tr>
 							<td>Numer seryjny</td>
 							<td>'.$row['SN'].'</td>
+						</tr>
+						<tr>
+							<td>Użytkownik</td>
+							<td>'.$row['Nazwisko'].' '.$row['Imie'].'</td>
 						</tr>
 						<tr>	
 							<td>Szyfrowany</td>
@@ -128,7 +150,156 @@
 							<td>MAC Wi-Fi</td>
 							<td>'.$row['Mac_ETH2'].'</td>
 						</tr>
+						<tr>	
+							<td>Gwarancja</td>
+							<td>'.showTheValue($row['Gwarancja'], "miesięcy").'</td>
+						</tr>
+						<tr>	
+							<td>Procesor</td>
+							<td>'.$row['Procesor'].'</td>
+						</tr>
+						<tr>	
+							<td>Liczba wątków</td>
+							<td>'.$row['Liczba_watkow'].'</td>
+						</tr>
+						<tr>	
+							<td>Ilość pamięci RAM</td>
+							<td>'.$row['Ilosc_RAMu'].'</td>
+						</tr>
+						<tr>	
+							<td>Rodzaj dysku 1</td>
+							<td>'.$row['Rodzaj_dysku_1'].'</td>
+						</tr>
+						<tr>	
+							<td>Rozmiar dysku 1</td>
+							<td>'.showTheValue($row['Rozmiar_dysku_1'], "GB").'</td>
+						</tr>
+						<tr>	
+							<td>Rodzaj dysku 2</td>
+							<td>'.$row['Rodzaj_dysku_2'].'</td>
+						</tr>
+						<tr>	
+							<td>Rozmiar dysku 2</td>
+							<td>'.showTheValue($row['Rozmiar_dysku_2'], "GB").'</td>
+						</tr>
+						<tr>	
+							<td>Grafika</td>
+							<td>'.$row['Grafika'].'</td>
+						</tr>
+						<tr>	
+							<td>Rozdzielczość</td>
+							<td>'.$row['Rozdzielczosc'].'</td>
+						</tr>
 						</table>
+					</div>
+
+					<div id="PC_EDIT" class="empty">
+					<form action="PHP/EVENT/add_information_pc.php" method="POST">
+					<table>
+						<tr>
+							<td>Nazwa PC</td>
+							<td><input type="text" value="'.$row['Nazwa'].'" name="PC_Nazwa" /></td>
+						</tr>
+						<tr>
+							<td>Producent</td>
+							<td>'.dropDownListForTableProducerToHTML("PC_Producent" ,$row['Producent']).'</td>
+						</tr>
+						<tr>
+							<td>Model</td>
+							<td>'.dropDownListForTableModelToHTML( "PC_Model",$row['Model']).'</td>
+						</tr>
+						<tr>
+							<td>Numer seryjny</td>
+							<td>'.$row['SN'].'</td>
+						</tr>
+						<tr>
+							<td>Użytkownik</td>
+							<td>'.dropDownListForTablePersonToHTML("PC_Uzytkownik",$row['Nazwisko'].' '.$row['Imie']).'</td>
+						</tr>
+						<tr>
+							<td>Czy zaszyfrowany</td>
+							<td>'.dropDownListForTrueOrFalseToHTML("PC_CzyZaszyfrowany",$row['Czy_zaszyfrowany']).'</td>
+						</tr>
+						<tr>
+							<td>System</td>
+							<td>'.dropDownListForTableOperatingSystemToHTML("PC_System", $row['System']).'</td>
+						</tr>
+						<tr>	
+							<td>Status</td>
+							<td>'.dropDownListForTableStatusToHTML("PC_Status", $row['Status']).'</td>
+						</tr>
+						<tr>	
+							<td>Identyfikatro BitLocker</td>
+							<td><input type="text" value="'.$row['Identyfikatro_BitLocker'].'" name="PC_IdentyfikatorBitLocker" size="36" /></td>
+						</tr>
+						<tr>	
+							<td>Klucz BitLocker</td>
+							<td><input type="text" value="'.$row['Klucz_BitLocker'].'" name="PC_KluczBitLocker" size="60" /></td>
+						</tr>
+						<tr>	
+							<td>Hasło</td>
+							<td><input type="text" value="'.$row['Haslo'].'" name="PC_HasloBitLocker" /></td>
+						</tr>
+						<tr>	
+							<td>Data szyfrowania</td>
+							<td><input type="date" value="'.$row['Data_szyfrowania'].'" name="PC_DataSzyfrowania" /></td>
+						</tr>
+						<tr>	
+							<td>MAC Ethernet</td>
+							<td>'.$row['Mac_ETH'].'</td>
+						</tr>
+						<tr>	
+							<td>MAC Wi-Fi</td>
+							<td>'.$row['Mac_ETH2'].'</td>
+						</tr>
+						<tr>	
+							<td>Gwarancja</td>
+							<td>'.getTheValue("number", "PC_Gwarancja", "miesięcy", $row['Gwarancja']).'</td>
+						</tr>
+						<tr>	
+							<td>Procesor</td>
+							<td><input type="text" value="'.$row['Procesor'].'" name="PC_Procesor" /></td>
+						</tr>
+						<tr>	
+							<td>Liczba wątków</td>
+							<td><input type="number" value="'.$row['Liczba_watkow'].'" name="PC_Liczba_watkow" /></td>
+						</tr>
+						<tr>	
+							<td>Ilość pamięci RAM</td>
+							<td>'.dropDownListRAMToHTML("PC_RAM", $row['Ilosc_RAMu']).'</td>
+						</tr>
+						<tr>	
+							<td>Rodzaj dysku 1</td>
+							<td>'.dropDownListTypeHardDiskToHTML("PC_Rodzaj_dysku_1", $row['Rodzaj_dysku_1']).'</td>
+						</tr>
+						<tr>	
+							<td>Rozmiar dysku 1</td>
+							<td>'.getTheValue("number", "PC_Rozmiar_dysku_1", "GB", $row['Rozmiar_dysku_1']).'</td>
+						</tr>
+						<tr>	
+							<td>Rodzaj dysku 2</td>
+							<td>'.dropDownListTypeHardDiskToHTML("PC_Rodzaj_dysku_2", $row['Rodzaj_dysku_2']).'</td>
+						</tr>
+						<tr>	
+							<td>Rozmiar dysku 2</td>
+							<td>'.getTheValue("number", "PC_Rozmiar_dysku_2", "GB", $row['Rozmiar_dysku_2']).'</td>
+						</tr>
+						<tr>	
+							<td>Grafika</td>
+							<td><input type="text" value="'.$row['Grafika'].'" name="PC_Grafika" /></td>
+						</tr>
+						<tr>	
+							<td>Rozdzielczość</td>
+							<td>'.dropDownListDisplayToHTML("PC_Rozdzielczosc", $row['Rozdzielczosc']).'</td>
+						</tr>
+						<tr>
+							<td><input type="hidden" name="PC_number" value="'.$_GET['number'].'" /></td>
+							<td><center><input type="submit" value="Zapisz" /></center> </td>
+						</tr>
+					</table>
+					</form>					
+					
+
 					</div>
 					
 					
@@ -194,7 +365,7 @@
 			<div id="CONTENT_TAB"></div>
 
 				<center> 
-					<button>Edytuj</button> <button>Zapisz</button>
+					<button onClick="nextTabPC_Edit();">Edytuj</button> <button>Zapisz</button>
 				</center>
 				<hr/>
 				
@@ -206,12 +377,15 @@
 								,pc.idComputers 'id_pc'
 								,CONCAT(pc.ComputerName, ' ', pc.SerialNumber) 'PC_SN'
 								,d.idDevice 'ID_urzadzenia'
-								,CONCAT(d.NameDevice, ' ',d.Producer, ' ',d.Model) 'Nazwa_urzadzenia'
+								,CONCAT(typ.Type, ' ',prod.Producer, ' ',model.Producer) 'Nazwa_urzadzenia'
 								,c.Comment 'Komentarz'
 								,c.DateAdd 'Data_dodania_kom'
 						FROM comments c LEFT JOIN person p ON c.idPerson=p.idPerson
-										LEFT JOIN computers pc ON c.idComputers=pc.idComputers
-										LEFT JOIN device d ON c.idDevice=d.idDevice
+						LEFT JOIN computers pc ON c.idComputers=pc.idComputers
+						LEFT JOIN device d ON c.idDevice=d.idDevice
+		                LEFT JOIN typeofdevice typ ON d.idTypeOfDevice=typ.idTypeOfDevice
+		                LEFT JOIN producerdevice prod ON d.idProducerDevice=prod.idProducerDevice
+		                LEFT JOIN modelsdevice model ON d.idModelsDevice=model.idModelsDevice
 						WHERE c.idComputers = ".$_GET['number']."
 						ORDER BY c.DateAdd ASC;";
 				
@@ -236,13 +410,14 @@
 				
 				mysql_free_result($query);
 			?>
+
 				<tr>
 				<form action="PHP/EVENT/add.php" target="_self" method="POST">
 					<td> Użytkownik zalogowany</td>
-					<td> <textarea type="text" name="comments" maxlength="255" cols="70" rows="5"> </textarea></td>
+					<td> <textarea type="text" name="comments" minlength="4" maxlength="255" cols="70" rows="5"></textarea></td>
 					<td> 
 						<input type="submit" value="Dodaj"> 
-						<input type="hidden" name="user" value="12" />
+						<input type="hidden" name="user" value="86" />
 						<input type="hidden" name="number" value="<?php echo $_GET['number']; ?>" />
 					</td>
 				</form>
@@ -251,7 +426,7 @@
 			<?php 
 			
 				if(isset($_POST['comments'])){
-					mysql_query(addComments(11,$_GET['number'], $_POST['comments'])); 
+					mysql_query(addComments(86,$_GET['number'], $_POST['comments'])); 
 					
 					unset($_POST['comments']);
 				}
