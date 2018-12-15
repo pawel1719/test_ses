@@ -3,6 +3,7 @@
 function addCommentsForComputer($user, $computer, $comments){
 	
 	$date = date('Y-m-d H:i:s');
+	$comments = htmlentities($comments);
 	
 	$sql = "INSERT INTO comments (idPerson, idComputers, idDevice, Comment, DateAdd) 
 			VALUES ('$user', '$computer', NULL, '$comments', '$date');";

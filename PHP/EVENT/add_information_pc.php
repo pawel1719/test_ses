@@ -5,7 +5,11 @@
 	if( isset($_POST['PC_Nazwa']) && isset($_POST['PC_CzyZaszyfrowany']) && isset($_POST['PC_number']))
 	{
 		$no = $_POST['PC_number'];
-		$toChange = '';
+		$logged_user = $_POST['User'];
+		$toChange = "";
+		$history1 = "";
+		$history2 = "";
+		$log = " ( ".$logged_user.", ";
 
 
 		$sql = "SELECT 	 pc.idComputers 'ID_PC'
@@ -69,75 +73,391 @@
 		$_POST['PC_Grafika'] = htmlentities($_POST['PC_Grafika']);
 
 
+		//downloading data from the table for comparison of changes
 		$query = mysql_query($sql);
 		$row = mysql_fetch_assoc($query);
-		
 
+
+		///////////////////////////////////////////////////////////////////////////////////////////////	
 		if( strcmp($row['Nazwa'], $_POST['PC_Nazwa']) != 0 ) 
-		{ 	$toChange = $toChange."\n ComputerName = '".$_POST['PC_Nazwa']."',";	}
+		{ 	
+			$toChange = $toChange."\n ComputerName = '".$_POST['PC_Nazwa']."',";
+			$log = $log." '".$_POST['PC_Nazwa']."', 1,";
+			
+			$history1 = $history1."\n '".$row['Nazwa']."',";
+			$history1 = $history1."\n '".$row['SN']."',";
 
+			$history2 = $history2."\n '".$_POST['PC_Nazwa']."',";
+			$history2 = $history2."\n '".$row['SN']."',";
+		}else {
+
+			if( strlen($row['Nazwa']) >= 3 ) {
+				$log = $log." '".$row['Nazwa']."', 0,";
+			} else {
+				$log = $log." NULL, 0,";
+			}
+
+			$history1 = $history1."\n '".$row['Nazwa']."',";
+			$history1 = $history1."\n '".$row['SN']."',";
+			
+			$history2 = $history2."\n '".$row['Nazwa']."',";
+			$history2 = $history2."\n '".$row['SN']."',";	
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
 		if( strcmp($row['ID_Producent'], $_POST['PC_Producent']) !=0 ) 
-		{	$toChange = $toChange."\n idProducerDevice = ".$_POST['PC_Producent'].","; }
-
+		{	
+			$toChange = $toChange."\n idProducerDevice = ".$_POST['PC_Producent'].","; 
+			$log = $log."\n ".$_POST['PC_Producent'].", 1,"; 
+		}else {
+			if( strlen($row['ID_Producent']) >= 1 ) {
+				$log = $log."\n ".$row['ID_Producent'].", 0,";
+			} else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
 		if( strcmp($row['ID_Model'], $_POST['PC_Model']) != 0 ) 
-		{	$toChange = $toChange."\n idModelsDevice = ".$_POST['PC_Model'].","; }
-
+		{	
+			$toChange = $toChange."\n idModelsDevice = ".$_POST['PC_Model'].","; 
+			$log = $log."\n ".$_POST['PC_Model'].", 1,"; 
+		}else {
+			if( strlen($row['ID_Model']) >= 1 ) {
+				$log = $log."\n ".$row['ID_Model'].", 0,";
+			} else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
 		if( strcmp($row['ID_Osoby'], $_POST['PC_Uzytkownik']) != 0 ) 
-		{	$toChange = $toChange."\n idPerson = ".$_POST['PC_Uzytkownik'].","; 
+		{	
+			$toChange = $toChange."\n idPerson = ".$_POST['PC_Uzytkownik'].",";
+			$log = $log."\n ".$_POST['PC_Uzytkownik'].", 1,";
+			
+			$history1 = $history1."\n ".$row['ID_Osoby'].",";
+			$history2 = $history2."\n ".$_POST['PC_Uzytkownik'].",";
+
+		} else {
+			
+			if( strlen($row['ID_Osoby']) >= 1 ) {
+				$log = $log."\n ".$row['ID_Osoby'].", 0,";
+			} else {
+				$log = $log."\n NULL, 0,";
+			}
+			
+			$history1 = $history1."\n NULL,";
+			$history2 = $history2."\n ".$_POST['PC_Uzytkownik'].",";
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if( strcmp($row['Nazwa'], $_POST['PC_Nazwa']) != 0 || strcmp($row['ID_Osoby'], $_POST['PC_Uzytkownik']) != 0 || strcmp($row['ID_Status'], $_POST['PC_Status']) != 0)
+		{ 	
+			$history1 = $history1."\n ".$logged_user.",";
+			$history1 = $history1."\n '".date('Y-m-d H:i:s')."',";
+
+			$history2 = $history2."\n 86,";
+			$history2 = $history2."\n '".date('Y-m-d H:i:s')."',";
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if( strcmp($row['Czy_zaszyfrowany'], $_POST['PC_CzyZaszyfrowany']) != 0 ) 
+		{	
+			$toChange = $toChange."\n Encrypted = ".$_POST['PC_CzyZaszyfrowany'].","; 
+			$log = $log."\n ".$_POST['PC_CzyZaszyfrowany'].", 1,"; 
+		}else {
+			if( strlen($row['Czy_zaszyfrowany']) >= 1 ) {
+				$log = $log."\n ".$row['Czy_zaszyfrowany'].", 0,";
+			} else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if( strcmp($row['ID_System'], $_POST['PC_System']) != 0 ) 
+		{	
+			$toChange = $toChange."\n OperatingSystem = ".$_POST['PC_System'].","; 
+			$log = $log."\n ".$_POST['PC_System'].", 1,"; 
+		}else {
+			if( strlen($row['ID_System']) >= 1 ) {
+				$log = $log."\n ".$row['ID_System'].", 0,"; 
+			} else {
+				$log = $log."\n NULL, 0,"; 
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if( strcmp($row['ID_Status'], $_POST['PC_Status']) != 0 ) 
+		{	
+			$toChange = $toChange."\n idStatusComputer = ".$_POST['PC_Status'].","; 
+			$log = $log."\n ".$_POST['PC_Status'].", 1,";
+		}else {
+			if( strlen($row['ID_Status']) >= 1 ) {
+				$log = $log."\n ".$row['ID_Status'].", 0,";
+			} else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if( $row['ID_Status'] == 2 && $_POST['PC_Status'] == 1){
+			//wydanie komputera
+			$history1 = $history1."\n 0, 1,";
+			$history2 = $history2."\n 1, 0,";
+		}else if(  $row['ID_Status'] == 1 && $_POST['PC_Status'] == 2) {
+			//zwrócnie kompa
+			$history1 = $history1."\n 1, 0,";
+			$history2 = $history2."\n 0, 1,";
+		}else{
+			//bezczynnosc, zmiana innnych danych 
+			$history1 = $history1."\n 0, 0,";
+			$history2 = $history2."\n 0, 0,";
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if( strcmp($row['Identyfikatro_BitLocker'], $_POST['PC_IdentyfikatorBitLocker']) != 0 )
+		{	
+			$toChange = $toChange."\n IdentifierBitLocker = '".$_POST['PC_IdentyfikatorBitLocker']."',";
+			$log = $log."\n '".$_POST['PC_IdentyfikatorBitLocker']."', 1,";
+
+		} else {
+
+			if(strlen($row['Identyfikatro_BitLocker']) >= 3 ) {
+				$log = $log."\n '".$row['Identyfikatro_BitLocker']."', 0,";
+			}else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if(strcmp($row['Klucz_BitLocker'], $_POST['PC_KluczBitLocker']) != 0 ) 
+		{	
+			$toChange = $toChange."\n RecoveryKeyBitLocker = '".$_POST['PC_KluczBitLocker']."',";
+			$log = $log."\n '".$_POST['PC_KluczBitLocker']."', 1,";
+
+		} else {
+
+			if(strlen($row['Klucz_BitLocker']) >= 3 ) {
+				$log = $log."\n '".$row['Klucz_BitLocker']."', 0,";
+			}else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if(strcmp($row['Haslo'], $_POST['PC_HasloBitLocker']) != 0 ) 
+		{	
+			$toChange = $toChange."\n PasswordEncrypted = '".$_POST['PC_HasloBitLocker']."',";
+			$log = $log."\n '".$_POST['PC_HasloBitLocker']."', 1,";
+
+		} else {
+
+			if(strlen($row['Haslo']) >= 3 ) {
+				$log = $log."\n '".$row['Haslo']."', 0,";
+			}else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if(strcmp($row['Data_szyfrowania'], $_POST['PC_DataSzyfrowania']) != 0 ) 
+		{	
+			$toChange = $toChange."\n DateEncrypted = '".$_POST['PC_DataSzyfrowania']."',";
+			$log = $log."\n '".$_POST['PC_DataSzyfrowania']."', 1,";
+		
+		} else {
+			
+			if(strlen($row['Data_szyfrowania']) >= 3 ) {
+				$log = $log."\n '".$row['Data_szyfrowania']."', 0,";
+			}else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if(strcmp($row['Gwarancja'], $_POST['PC_Gwarancja']) != 0 ) 
+		{	
+			$toChange = $toChange."\n Warranty = ".$_POST['PC_Gwarancja'].",";
+			$log = $log."\n ".$_POST['PC_Gwarancja'].", 1,";
+		
+		} else {
+			
+			if(strlen($row['Gwarancja']) >= 1 ) {
+				$log = $log."\n ".$row['Gwarancja'].", 0,";
+			}else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if(strcmp($row['Procesor'], $_POST['PC_Procesor']) != 0 ) 
+		{ 	
+			$toChange = $toChange."\n CPU = '".$_POST['PC_Procesor']."',";
+			$log = $log."\n '".$_POST['PC_Procesor']."', 1,";
+		
+		} else {
+			
+			if(strlen($row['Procesor']) >= 3 ) {
+				$log = $log."\n '".$row['Procesor']."', 0,";
+			}else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if(strcmp($row['Liczba_watkow'], $_POST['PC_Liczba_watkow']) != 0 ) 
+		{	
+			$toChange = $toChange."\n NumberOfCores = '".$_POST['PC_Liczba_watkow']."',";
+			$log = $log."\n '".$_POST['PC_Liczba_watkow']."', 1,";
+		
+		} else {
+			
+			if(strlen($row['Liczba_watkow']) >= 1 ) {
+				$log = $log."\n '".$row['Liczba_watkow']."', 0,";
+			}else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if(strcmp($row['Ilosc_RAMu'], $_POST['PC_RAM']) != 0 ) 
+		{	
+			$toChange = $toChange."\n RAMMemory = '".$_POST['PC_RAM']."',";
+			$log = $log."\n '".$_POST['PC_RAM']."', 1,";
+		
+		} else {
+			
+			if(strlen($row['Ilosc_RAMu']) >= 1 ) {
+				$log = $log."\n '".$row['Ilosc_RAMu']."', 0,";
+			}else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if(strcmp($row['Rodzaj_dysku_1'], $_POST['PC_Rodzaj_dysku_1']) != 0 ) 
+		{	
+			$toChange = $toChange."\n HardDriveType_1 = '".$_POST['PC_Rodzaj_dysku_1']."',";
+			$log = $log."\n '".$_POST['PC_Rodzaj_dysku_1']."', 1,";
+		
+		} else {
+			
+			if(strlen($row['Rodzaj_dysku_1']) >= 3 ) {
+				$log = $log."\n '".$row['Rodzaj_dysku_1']."', 0,";
+			}else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if(strcmp($row['Rozmiar_dysku_1'], $_POST['PC_Rozmiar_dysku_1']) != 0 ) 
+		{	
+			$toChange = $toChange."\n HardDriveCapacity_1 = '".$_POST['PC_Rozmiar_dysku_1']."',";
+			$log = $log."\n '".$_POST['PC_Rozmiar_dysku_1']."', 1,";
+		
+		} else {
+			
+			if(strlen($row['Rozmiar_dysku_1']) >= 2 ) {
+				$log = $log."\n '".$row['Rozmiar_dysku_1']."', 0,";
+			}else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if(strcmp($row['Rodzaj_dysku_2'], $_POST['PC_Rodzaj_dysku_2']) != 0 ) 
+		{	
+			$toChange = $toChange."\n HardDriveType_2 = '".$_POST['PC_Rodzaj_dysku_2']."',";
+			$log = $log."\n '".$_POST['PC_Rodzaj_dysku_2']."', 1,";
+		
+		} else {
+			
+			if(strlen($row['Rodzaj_dysku_2']) >= 3 ) {
+				$log = $log."\n '".$row['Rodzaj_dysku_2']."', 0,";
+			}else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if(strcmp($row['Rozmiar_dysku_2'], $_POST['PC_Rozmiar_dysku_2']) != 0 ) 
+		{	
+			$toChange = $toChange."\n HardDriveCapacity_2 = '".$_POST['PC_Rozmiar_dysku_2']."',";
+			$log = $log."\n '".$_POST['PC_Rozmiar_dysku_2']."', 1,";
+		
+		} else {
+			
+			if(strlen($row['Rozmiar_dysku_2']) >= 2 ) {
+				$log = $log."\n '".$row['Rozmiar_dysku_2']."', 0,";
+			}else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if(strcmp($row['Grafika'], $_POST['PC_Grafika']) != 0 ) 
+		{	
+			$toChange = $toChange."\n Grapfic = '".$_POST['PC_Grafika']."',";
+			$log = $log."\n '".$_POST['PC_Grafika']."', 1,";
+		
+		} else {
+			
+			if(strlen($row['Grafika']) >= 3 ) {
+				$log = $log."\n '".$row['Grafika']."', 0,";
+			}else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if(strcmp($row['Rozdzielczosc'], $_POST['PC_Rozdzielczosc']) != 0 ) 
+		{	
+			$toChange = $toChange."\n DisplayResolution = '".$_POST['PC_Rozdzielczosc']."',";
+			$log = $log."\n '".$_POST['PC_Rozdzielczosc']."', 1,";
+		
+		} else {
+			
+			if(strlen($row['Rozdzielczosc']) >= 3 ) {
+				$log = $log."\n '".$row['Rozdzielczosc']."', 0,";
+			}else {
+				$log = $log."\n NULL, 0,";
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		//adding the rest of the data to the logsComputers table
+		$log = $log." '".date('Y-m-d H:i:s')."', ";
+
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if( strlen($row['ID_Urzadzenie']) >= 1 ) {
+			$log = $log." ".$row['ID_Urzadzenie'].", 0,";
+		} else {
+			$log = $log." NULL, 0,";
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if( strlen($row['SN']) >= 1 ) {
+			$log = $log." '".$row['SN']."', 0,";
+		} else {
+			$log = $log." NULL, 0,";
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if( strlen($row['Mac_ETH']) >= 1 ) {
+			$log = $log." '".$row['Mac_ETH']."', 0,";
+		} else {
+			$log = $log." NULL, 0,";
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if( strlen($row['Mac_ETH2']) >= 1 ) {
+			$log = $log." '".$row['Mac_ETH2']."', 0,";
+		} else {
+			$log = $log." NULL, 0,";
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if( strlen($row['ID_Office']) >= 1 ) {
+			$log = $log." ".$row['ID_Office'].", 0,";
+		} else {
+			$log = $log." NULL, 0,";
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		if( strlen($row['ID_faktury']) >= 1 ) {
+			$log = $log." ".$row['ID_faktury'].", 0 )";
+		} else {
+			$log = $log." NULL, 0 );";
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////
+
+		//creating a history of computers
+		if( strcmp($row['Nazwa'], $_POST['PC_Nazwa']) != 0 || strcmp($row['ID_Osoby'], $_POST['PC_Uzytkownik']) != 0 || strcmp($row['ID_Status'], $_POST['PC_Status']) != 0)
+		{
+			$history1 = substr($history1, 0, -1);
+			$insert1 = "INSERT INTO computerhistory ( ComputerName, SerialNumber, idPersonUser, idPersonIT, Date, GiveAComputer, GetAComputer) VALUES ( ".$history1.");";
+			mysql_query($insert1)  or die("Error query 1");
+
+			$history2 = substr($history2, 0, -1);
+			$insert2 = "INSERT INTO computerhistory ( ComputerName, SerialNumber, idPersonUser, idPersonIT, Date, GiveAComputer, GetAComputer) VALUES ( ".$history2.");";
+			mysql_query($insert2) or die("Error query 2");
 		}
 
-		if( strcmp($row['Czy_zaszyfrowany'], $_POST['PC_CzyZaszyfrowany']) != 0 ) 
-		{	$toChange = $toChange."\n Encrypted = ".$_POST['PC_CzyZaszyfrowany'].","; }
 
-		if( strcmp($row['ID_System'], $_POST['PC_System']) != 0 ) 
-		{	$toChange = $toChange."\n OperatingSystem = ".$_POST['PC_System'].","; }
-
-		if( strcmp($row['ID_Status'], $_POST['PC_Status']) != 0 ) 
-		{	$toChange = $toChange."\n idStatusComputer = ".$_POST['PC_Status'].","; 		}
-
-		if( strcmp($row['Identyfikatro_BitLocker'], $_POST['PC_IdentyfikatorBitLocker']) != 0 )
-		{	$toChange = $toChange."\n IdentifierBitLocker = '".$_POST['PC_IdentyfikatorBitLocker']."',"; }
-
-		if(strcmp($row['Klucz_BitLocker'], $_POST['PC_KluczBitLocker']) != 0 ) 
-		{	$toChange = $toChange."\n RecoveryKeyBitLocker = '".$_POST['PC_KluczBitLocker']."',"; }
-
-		if(strcmp($row['Haslo'], $_POST['PC_HasloBitLocker']) != 0 ) 
-		{	$toChange = $toChange."\n PasswordEncrypted = '".$_POST['PC_HasloBitLocker']."',"; }
-
-		if(strcmp($row['Data_szyfrowania'], $_POST['PC_DataSzyfrowania']) != 0 ) 
-		{	$toChange = $toChange."\n DateEncrypted = '".$_POST['PC_DataSzyfrowania']."',"; }
-
-		if(strcmp($row['Gwarancja'], $_POST['PC_Gwarancja']) != 0 ) 
-		{	$toChange = $toChange."\n Warranty = ".$_POST['PC_Gwarancja'].","; }
-
-		if(strcmp($row['Procesor'], $_POST['PC_Procesor']) != 0 ) 
-		{ 	$toChange = $toChange."\n CPU = '".$_POST['PC_Procesor']."',"; }
-
-		if(strcmp($row['Liczba_watkow'], $_POST['PC_Liczba_watkow']) != 0 ) 
-		{	$toChange = $toChange."\n NumberOfCores = '".$_POST['PC_Liczba_watkow']."',"; }
-
-		if(strcmp($row['Ilosc_RAMu'], $_POST['PC_RAM']) != 0 ) 
-		{	$toChange = $toChange."\n RAMMemory = '".$_POST['PC_RAM']."',"; }
-
-		if(strcmp($row['Rodzaj_dysku_1'], $_POST['PC_Rodzaj_dysku_1']) != 0 ) 
-		{	$toChange = $toChange."\n HardDriveType_1 = '".$_POST['PC_Rodzaj_dysku_1']."',";	}
-
-		if(strcmp($row['Rozmiar_dysku_1'], $_POST['PC_Rozmiar_dysku_1']) != 0 ) 
-		{	$toChange = $toChange."\n HardDriveCapacity_1 = '".$_POST['PC_Rozmiar_dysku_1']."',"; }
-
-		if(strcmp($row['Rodzaj_dysku_2'], $_POST['PC_Rodzaj_dysku_2']) != 0 ) 
-		{	$toChange = $toChange."\n HardDriveType_2 = '".$_POST['PC_Rodzaj_dysku_2']."',"; }
-
-		if(strcmp($row['Rozmiar_dysku_2'], $_POST['PC_Rozmiar_dysku_2']) != 0 ) 
-		{	$toChange = $toChange."\n HardDriveCapacity_2 = '".$_POST['PC_Rozmiar_dysku_2']."',"; }
-
-		if(strcmp($row['Grafika'], $_POST['PC_Grafika']) != 0 ) 
-		{	$toChange = $toChange."\n Grapfic = '".$_POST['PC_Grafika']."',"; }
-
-		if(strcmp($row['Rozdzielczosc'], $_POST['PC_Rozdzielczosc']) != 0 ) 
-		{	$toChange = $toChange."\n DisplayResolution = '".$_POST['PC_Rozdzielczosc']."',"; }
-		
-
+		//clearing the variables post 
 		unset($_POST['PC_Nazwa']);
 		unset($_POST['PC_Producent']);
 		unset($_POST['PC_Model']);
@@ -164,17 +484,17 @@
 		unset($_POST['PC_Rozdzielczosc']);
 		unset($_POST['PC_number']);
 		
-
+	
+		//changing data in the computers table
 		$toChange = substr($toChange, 0, -1);
-		
 		$sql_update = "UPDATE computers SET ".$toChange." WHERE computers.idComputers = ".$no.";";
-		
-		mysql_query($sql_update) or die("Zapytanie niepoprawne");
+		mysql_query($sql_update) or die("Error query 3");
 
-		echo $sql_update;
-		
+		//creating a detailed history of change
+		$sql_log = "INSERT INTO logsComputers( `idPersonIT`, `ComputerName`, `ChangedComputerName`, `idProducerDevice`, `ChangedIdProducerDevice`, `idModelsDevice`, `ChangedIdModelsDevice`, `idPerson`, `ChangedIdPerson`, `Encrypted`, `ChangedEncrypted`, `OperatingSystem`, `ChangedOperatingSystem`, `idStatusComputer`, `ChangedIdStatusComputer`, `IdentifierBitLocker`, `ChangedIdentifierBitLocker`, `RecoveryKeyNitLocker`	, `ChangedRecoveryKeyNitLocker`, `PasswordEncrypted`, `ChangedPasswordEncrypted`, `DateEncrypted`		, `ChangedDateEncrypted`, `Warranty`, `ChangedWarranty`, `CPU`, `ChangedCPU`, `NumberOfCores`, `ChangedNumberOfCores`, `RAMMemory`, `ChangedRAMMemory`, `HardDriveType_1`, `ChangedHardDriveType_1`, `HardDriveCapacity_1`, `ChangedHardDriveCapacity_1`, `HardDriveType_2`, `ChangedHardDriveType_2`, `HardDriveCapacity_2`, `ChangedHardDriveCapacity_2`, `Grapfic`, `ChangedGrapfic`, `DisplayResolution`	, `ChangedDisplayResolution`, `Date`, `idTypeOfDevice`, `ChangedIdTypeOfDevice`, `SerialNumber`, `ChangedSerialNumber`, `MacEthernet`, `ChangedMacEthernet`, `MacWiFi`, `ChangedMacWiFi`, `idOffice`, `ChangedIdOffice`, `idInvoice`, `ChangedIdInvoice` ) VALUES ".$log;
+		mysql_query( $sql_log ) or die("Error query 4");
+				
 		mysql_close();
-
 
 		header("Location: ../../homes.php?number=".$no."");
 

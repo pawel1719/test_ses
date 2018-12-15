@@ -293,7 +293,10 @@
 							<td>'.dropDownListDisplayToHTML("PC_Rozdzielczosc", $row['Rozdzielczosc']).'</td>
 						</tr>
 						<tr>
-							<td><input type="hidden" name="PC_number" value="'.$_GET['number'].'" /></td>
+							<td>
+								<input type="hidden" name="PC_number" value="'.$_GET['number'].'" />
+								<input type="hidden" name="User" value="86" />
+							</td>
 							<td><center><input type="submit" value="Zapisz" /></center> </td>
 						</tr>
 					</table>
