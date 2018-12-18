@@ -1,8 +1,150 @@
 <?php
+	session_start();
+
 	require_once "../function.php";
-	connectDB();
+	
+c	onnectDB();
 		
-	if( isset($_POST['PC_Nazwa']) && isset($_POST['PC_CzyZaszyfrowany']) && isset($_POST['PC_number']))
+
+	if( isset($_POST['ADD_PC_Nazwa']) && isset($_POST['ADD_PC_SerialNumber']) && isset($_POST['ADD_PC_Model']) ){
+
+		$error_validation = 0;
+		$_SESSION['error_validation_adding_pc'] = "";
+
+
+		if( !is_numeric($_POST['ADD_PC_Producent']) ) { 	
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPORPAWANY PRODUCENT\n";
+		}
+
+		if( !is_numeric($_POST['ADD_PC_Model']) ) { 	
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPORPAWNY MODEL\n";
+		}
+		
+		if( !is_numeric($_POST['ADD_PC_Uzytkownik']) ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPORPAWNY UŻYTKOWNIKA\n";
+		}
+		
+		if( !is_numeric($_POST['ADD_PC_CzyZaszyfrowany']) ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPORPAWNE DANE CZY ZASZYFROWANY\n";
+		}
+
+		if( !is_numeric($_POST['ADD_PC_System']) ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPORPAWNY SYSTEM\n";
+		}
+
+		if( !is_numeric($_POST['ADD_PC_Status']) ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPORPAWNY STATUS\n";
+		}
+		
+		if( !is_numeric($_POST['ADD_PC_Gwarancja']) ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPORPAWNA GWARANCJA\n";
+		}
+		
+		if( !is_numeric($_POST['ADD_PC_Liczba_watkow']) ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "BŁĄD LICZBY RDZENI\n";
+		}
+
+		if( !is_numeric($_POST['ADD_PC_Rozmiar_dysku_1']) ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPORPAWNY ROZMIAR DYSKU 1\n";
+		}
+
+		if( !is_numeric($_POST['ADD_PC_Rozmiar_dysku_2']) ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPORPAWNY ROZMIAR DYSKU 2\n";
+		}
+
+
+		if( preg_match( "([A-Z0-9\-]{4,14})", $_POST['ADD_PC_Nazwa']) == 0 ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPORPAWNA NAZWA dozwolone tylko duże litery i cyfry!\n";
+		}
+
+		if( preg_match( "([A-Z0-9]{3,})", $_POST['ADD_PC_SerialNumber']) == 0 ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPORPAWNY NUMER SERYJNY dozwolone tylko duże litery i cyfry!\n";
+		}
+
+		if( preg_match( "(^[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}$)", $_POST['ADD_PC_IdentyfikatorBitLocker']) == 0 ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPORPAWIDŁOWY IDENTYFIKATOR BITLOCKERA\n";
+		}
+
+		if( preg_match( "(^\d{6}-\d{6}-\d{6}-\d{6}-\d{6}-\d{6}-\d{6}-\d{6}$)", $_POST['ADD_PC_KluczBitLocker']) == 0 ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPOPRAWNY KLUCZ BITLOCKERA\n";
+		}
+
+		if( preg_match( "(^[A-Z0-9]{2}-[A-Z0-9]{2}-[A-Z0-9]{2}-[A-Z0-9]{2}-[A-Z0-9]{2}-[A-Z0-9]{2}$)",POST['ADD_PC_Ethernet']) == 0 ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPORPAWANY ADRES MAC ETH1 dozwolone tylko duże litery i cyfry!\n";
+		}
+
+		if( preg_match( "(^[A-Z0-9]{2}-[A-Z0-9]{2}-[A-Z0-9]{2}-[A-Z0-9]{2}-[A-Z0-9]{2}-[A-Z0-9]{2}$)",POST['ADD_PC_MAC_WiFi']) == 0 ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPORPAWANY ADRES MAC WiFi dozwolone tylko duże litery i cyfry!\n";
+		}
+
+		if( preg_match( "(^SSD|HDD$)", $_POST['ADD_PC_Rodzaj_dysku_1']) == 0 ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPOPRAWNY RODZAJ DYSKU 1\n";
+		}
+
+		if( preg_match( "(^SSD|HDD$)", $_POST['ADD_PC_Rodzaj_dysku_2']) == 0 ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPOPRAWNY RODZAJ DYSKU 2\n";
+		}
+
+		if( preg_match( "(^[0-9]{2,4}×[0-9]{2,4}$)", $_POST['ADD_PC_Rozdzielczosc']) == 0 ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPOPRAWNA ROZDZIELCZOŚĆ\n";
+		}
+
+		if( preg_match( "(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)", $_POST['ADD_PC_DataSzyfrowania']) == 0 ) {
+			$error_validation = 1;
+			$_SESSION['error_validation_adding_pc'] = "NIEPOPRAWNA DATA SZYFROWANIA\n";
+		}
+
+
+
+
+
+		// $_POST['ADD_PC_Nazwa'];
+		// $_POST['ADD_PC_Producent'];
+		// $_POST['ADD_PC_Model'];
+		// $_POST['ADD_PC_SerialNumber'];
+		// $_POST['ADD_PC_Uzytkownik'];
+		// $_POST['ADD_PC_CzyZaszyfrowany'];
+		// $_POST['ADD_PC_System'];
+		// $_POST['ADD_PC_Status'];
+		// $_POST['ADD_PC_IdentyfikatorBitLocker'];
+		// $_POST['ADD_PC_KluczBitLocker'];
+		$_POST['ADD_PC_HasloBitLocker'];
+		// echo $_POST['ADD_PC_DataSzyfrowania'];
+		// $_POST['ADD_PC_Ethernet'];
+		// $_POST['ADD_PC_MAC_WiFi'];
+		// $_POST['ADD_PC_Gwarancja'];
+		$_POST['ADD_PC_Procesor'];
+		// $_POST['ADD_PC_Liczba_watkow'];
+		// $_POST['ADD_PC_RAM'];
+		// $_POST['ADD_PC_Rodzaj_dysku_1'];
+		// $_POST['ADD_PC_Rozmiar_dysku_1'];
+		// $_POST['ADD_PC_Rodzaj_dysku_2'];
+		// $_POST['ADD_PC_Rozmiar_dysku_2'];
+		$_POST['ADD_PC_Grafika'];
+		// $_POST['ADD_PC_Rozdzielczosc'];
+
+
+	}
+	 else if( isset($_POST['PC_Nazwa']) && isset($_POST['PC_CzyZaszyfrowany']) && isset($_POST['PC_number']))
 	{
 		$no = $_POST['PC_number'];
 		$logged_user = $_POST['User'];
@@ -10,6 +152,7 @@
 		$history1 = "";
 		$history2 = "";
 		$log = " ( ".$logged_user.", ";
+		$execute = 1;
 
 
 		$sql = "SELECT 	 pc.idComputers 'ID_PC'
@@ -89,6 +232,8 @@
 
 			$history2 = $history2."\n '".$_POST['PC_Nazwa']."',";
 			$history2 = $history2."\n '".$row['SN']."',";
+
+			$execute = 0;
 		}else {
 
 			if( strlen($row['Nazwa']) >= 3 ) {
@@ -107,7 +252,9 @@
 		if( strcmp($row['ID_Producent'], $_POST['PC_Producent']) !=0 ) 
 		{	
 			$toChange = $toChange."\n idProducerDevice = ".$_POST['PC_Producent'].","; 
-			$log = $log."\n ".$_POST['PC_Producent'].", 1,"; 
+			$log = $log."\n ".$_POST['PC_Producent'].", 1,";
+
+			$execute = 0;
 		}else {
 			if( strlen($row['ID_Producent']) >= 1 ) {
 				$log = $log."\n ".$row['ID_Producent'].", 0,";
@@ -120,6 +267,8 @@
 		{	
 			$toChange = $toChange."\n idModelsDevice = ".$_POST['PC_Model'].","; 
 			$log = $log."\n ".$_POST['PC_Model'].", 1,"; 
+
+			$execute = 0;
 		}else {
 			if( strlen($row['ID_Model']) >= 1 ) {
 				$log = $log."\n ".$row['ID_Model'].", 0,";
@@ -135,6 +284,8 @@
 			
 			$history1 = $history1."\n ".$row['ID_Osoby'].",";
 			$history2 = $history2."\n ".$_POST['PC_Uzytkownik'].",";
+
+			$execute = 0;
 
 		} else {
 			
@@ -161,6 +312,8 @@
 		{	
 			$toChange = $toChange."\n Encrypted = ".$_POST['PC_CzyZaszyfrowany'].","; 
 			$log = $log."\n ".$_POST['PC_CzyZaszyfrowany'].", 1,"; 
+
+			$execute = 0;
 		}else {
 			if( strlen($row['Czy_zaszyfrowany']) >= 1 ) {
 				$log = $log."\n ".$row['Czy_zaszyfrowany'].", 0,";
@@ -173,6 +326,8 @@
 		{	
 			$toChange = $toChange."\n OperatingSystem = ".$_POST['PC_System'].","; 
 			$log = $log."\n ".$_POST['PC_System'].", 1,"; 
+
+			$execute = 0;
 		}else {
 			if( strlen($row['ID_System']) >= 1 ) {
 				$log = $log."\n ".$row['ID_System'].", 0,"; 
@@ -185,6 +340,8 @@
 		{	
 			$toChange = $toChange."\n idStatusComputer = ".$_POST['PC_Status'].","; 
 			$log = $log."\n ".$_POST['PC_Status'].", 1,";
+
+			$execute = 0;
 		}else {
 			if( strlen($row['ID_Status']) >= 1 ) {
 				$log = $log."\n ".$row['ID_Status'].", 0,";
@@ -212,6 +369,8 @@
 			$toChange = $toChange."\n IdentifierBitLocker = '".$_POST['PC_IdentyfikatorBitLocker']."',";
 			$log = $log."\n '".$_POST['PC_IdentyfikatorBitLocker']."', 1,";
 
+			$execute = 0;
+
 		} else {
 
 			if(strlen($row['Identyfikatro_BitLocker']) >= 3 ) {
@@ -225,6 +384,8 @@
 		{	
 			$toChange = $toChange."\n RecoveryKeyBitLocker = '".$_POST['PC_KluczBitLocker']."',";
 			$log = $log."\n '".$_POST['PC_KluczBitLocker']."', 1,";
+
+			$execute = 0;
 
 		} else {
 
@@ -240,6 +401,8 @@
 			$toChange = $toChange."\n PasswordEncrypted = '".$_POST['PC_HasloBitLocker']."',";
 			$log = $log."\n '".$_POST['PC_HasloBitLocker']."', 1,";
 
+			$execute = 0;
+
 		} else {
 
 			if(strlen($row['Haslo']) >= 3 ) {
@@ -253,6 +416,8 @@
 		{	
 			$toChange = $toChange."\n DateEncrypted = '".$_POST['PC_DataSzyfrowania']."',";
 			$log = $log."\n '".$_POST['PC_DataSzyfrowania']."', 1,";
+
+			$execute = 0;
 		
 		} else {
 			
@@ -267,6 +432,8 @@
 		{	
 			$toChange = $toChange."\n Warranty = ".$_POST['PC_Gwarancja'].",";
 			$log = $log."\n ".$_POST['PC_Gwarancja'].", 1,";
+
+			$execute = 0;
 		
 		} else {
 			
@@ -281,6 +448,8 @@
 		{ 	
 			$toChange = $toChange."\n CPU = '".$_POST['PC_Procesor']."',";
 			$log = $log."\n '".$_POST['PC_Procesor']."', 1,";
+
+			$execute = 0;
 		
 		} else {
 			
@@ -295,6 +464,8 @@
 		{	
 			$toChange = $toChange."\n NumberOfCores = '".$_POST['PC_Liczba_watkow']."',";
 			$log = $log."\n '".$_POST['PC_Liczba_watkow']."', 1,";
+
+			$execute = 0;
 		
 		} else {
 			
@@ -309,6 +480,8 @@
 		{	
 			$toChange = $toChange."\n RAMMemory = '".$_POST['PC_RAM']."',";
 			$log = $log."\n '".$_POST['PC_RAM']."', 1,";
+
+			$execute = 0;
 		
 		} else {
 			
@@ -323,6 +496,8 @@
 		{	
 			$toChange = $toChange."\n HardDriveType_1 = '".$_POST['PC_Rodzaj_dysku_1']."',";
 			$log = $log."\n '".$_POST['PC_Rodzaj_dysku_1']."', 1,";
+
+			$execute = 0;
 		
 		} else {
 			
@@ -337,6 +512,8 @@
 		{	
 			$toChange = $toChange."\n HardDriveCapacity_1 = '".$_POST['PC_Rozmiar_dysku_1']."',";
 			$log = $log."\n '".$_POST['PC_Rozmiar_dysku_1']."', 1,";
+
+			$execute = 0;
 		
 		} else {
 			
@@ -351,6 +528,8 @@
 		{	
 			$toChange = $toChange."\n HardDriveType_2 = '".$_POST['PC_Rodzaj_dysku_2']."',";
 			$log = $log."\n '".$_POST['PC_Rodzaj_dysku_2']."', 1,";
+
+			$execute = 0;
 		
 		} else {
 			
@@ -365,6 +544,8 @@
 		{	
 			$toChange = $toChange."\n HardDriveCapacity_2 = '".$_POST['PC_Rozmiar_dysku_2']."',";
 			$log = $log."\n '".$_POST['PC_Rozmiar_dysku_2']."', 1,";
+
+			$execute = 0;
 		
 		} else {
 			
@@ -379,6 +560,8 @@
 		{	
 			$toChange = $toChange."\n Grapfic = '".$_POST['PC_Grafika']."',";
 			$log = $log."\n '".$_POST['PC_Grafika']."', 1,";
+
+			$execute = 0;
 		
 		} else {
 			
@@ -393,6 +576,8 @@
 		{	
 			$toChange = $toChange."\n DisplayResolution = '".$_POST['PC_Rozdzielczosc']."',";
 			$log = $log."\n '".$_POST['PC_Rozdzielczosc']."', 1,";
+
+			$execute = 0;
 		
 		} else {
 			
@@ -485,18 +670,21 @@
 		unset($_POST['PC_number']);
 		
 	
-		//changing data in the computers table
-		$toChange = substr($toChange, 0, -1);
-		$sql_update = "UPDATE computers SET ".$toChange." WHERE computers.idComputers = ".$no.";";
-		mysql_query($sql_update) or die("Error query 3");
+		if( $execute === 0 )
+		{
+			//changing data in the computers table
+			$toChange = substr($toChange, 0, -1);
+			$sql_update = "UPDATE computers SET ".$toChange." WHERE computers.idComputers = ".$no.";";
+			mysql_query($sql_update) or die("Error query 3");
 
-		//creating a detailed history of change
-		$sql_log = "INSERT INTO logsComputers( `idPersonIT`, `ComputerName`, `ChangedComputerName`, `idProducerDevice`, `ChangedIdProducerDevice`, `idModelsDevice`, `ChangedIdModelsDevice`, `idPerson`, `ChangedIdPerson`, `Encrypted`, `ChangedEncrypted`, `OperatingSystem`, `ChangedOperatingSystem`, `idStatusComputer`, `ChangedIdStatusComputer`, `IdentifierBitLocker`, `ChangedIdentifierBitLocker`, `RecoveryKeyNitLocker`	, `ChangedRecoveryKeyNitLocker`, `PasswordEncrypted`, `ChangedPasswordEncrypted`, `DateEncrypted`		, `ChangedDateEncrypted`, `Warranty`, `ChangedWarranty`, `CPU`, `ChangedCPU`, `NumberOfCores`, `ChangedNumberOfCores`, `RAMMemory`, `ChangedRAMMemory`, `HardDriveType_1`, `ChangedHardDriveType_1`, `HardDriveCapacity_1`, `ChangedHardDriveCapacity_1`, `HardDriveType_2`, `ChangedHardDriveType_2`, `HardDriveCapacity_2`, `ChangedHardDriveCapacity_2`, `Grapfic`, `ChangedGrapfic`, `DisplayResolution`	, `ChangedDisplayResolution`, `Date`, `idTypeOfDevice`, `ChangedIdTypeOfDevice`, `SerialNumber`, `ChangedSerialNumber`, `MacEthernet`, `ChangedMacEthernet`, `MacWiFi`, `ChangedMacWiFi`, `idOffice`, `ChangedIdOffice`, `idInvoice`, `ChangedIdInvoice` ) VALUES ".$log;
-		mysql_query( $sql_log ) or die("Error query 4");
+			//creating a detailed history of change
+			$sql_log = "INSERT INTO logsComputers( `idPersonIT`, `ComputerName`, `ChangedComputerName`, `idProducerDevice`, `ChangedIdProducerDevice`, `idModelsDevice`, `ChangedIdModelsDevice`, `idPerson`, `ChangedIdPerson`, `Encrypted`, `ChangedEncrypted`, `OperatingSystem`, `ChangedOperatingSystem`, `idStatusComputer`, `ChangedIdStatusComputer`, `IdentifierBitLocker`, `ChangedIdentifierBitLocker`, `RecoveryKeyNitLocker`	, `ChangedRecoveryKeyNitLocker`, `PasswordEncrypted`, `ChangedPasswordEncrypted`, `DateEncrypted`		, `ChangedDateEncrypted`, `Warranty`, `ChangedWarranty`, `CPU`, `ChangedCPU`, `NumberOfCores`, `ChangedNumberOfCores`, `RAMMemory`, `ChangedRAMMemory`, `HardDriveType_1`, `ChangedHardDriveType_1`, `HardDriveCapacity_1`, `ChangedHardDriveCapacity_1`, `HardDriveType_2`, `ChangedHardDriveType_2`, `HardDriveCapacity_2`, `ChangedHardDriveCapacity_2`, `Grapfic`, `ChangedGrapfic`, `DisplayResolution`	, `ChangedDisplayResolution`, `Date`, `idTypeOfDevice`, `ChangedIdTypeOfDevice`, `SerialNumber`, `ChangedSerialNumber`, `MacEthernet`, `ChangedMacEthernet`, `MacWiFi`, `ChangedMacWiFi`, `idOffice`, `ChangedIdOffice`, `idInvoice`, `ChangedIdInvoice` ) VALUES ".$log;
+			mysql_query( $sql_log ) or die("Error query 4");
+		}
 				
 		mysql_close();
 
-		header("Location: ../../homes.php?number=".$no."");
+		header("Location: ../../detailsOfComputer.php?number=".$no."");
 
 	}else{
 		

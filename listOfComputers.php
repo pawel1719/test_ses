@@ -68,9 +68,9 @@
 						
 						<tr>
 							<td>'.$counter.'</td>
-							<td><a href="homes.php?number='.$row['ID_PC'].'">'.$row['Producent'].' '.$row['Model'].'</a></td>
-							<td><a href="homes.php?number='.$row['ID_PC'].'">'.$row['SN'].'</a></td>
-							<td><a href="homes.php?number='.$row['ID_PC'].'">'.$row['Nazwa'].'</a></td>
+							<td><a href="detailsOfComputer.php?number='.$row['ID_PC'].'">'.$row['Producent'].' '.$row['Model'].'</a></td>
+							<td><a href="detailsOfComputer.php?number='.$row['ID_PC'].'">'.$row['SN'].'</a></td>
+							<td><a href="detailsOfComputer.php?number='.$row['ID_PC'].'">'.$row['Nazwa'].'</a></td>
 							<td>'.$row['Nazwisko'].'</td>
 							<td>'.$row['Imie'].'</td>
 							<td>'.$row['Status'].'</td>

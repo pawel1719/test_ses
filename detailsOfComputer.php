@@ -198,7 +198,7 @@
 					<table>
 						<tr>
 							<td>Nazwa PC</td>
-							<td><input type="text" value="'.$row['Nazwa'].'" name="PC_Nazwa" /></td>
+							<td><input type="text" value="'.$row['Nazwa'].'" name="PC_Nazwa" pattern="[A-Z0-9]" title="Dozwolone tylko duże litery" /></td>
 						</tr>
 						<tr>
 							<td>Producent</td>
@@ -230,11 +230,11 @@
 						</tr>
 						<tr>	
 							<td>Identyfikatro BitLocker</td>
-							<td><input type="text" value="'.$row['Identyfikatro_BitLocker'].'" name="PC_IdentyfikatorBitLocker" size="36" /></td>
+							<td><input type="text" value="'.$row['Identyfikatro_BitLocker'].'" name="PC_IdentyfikatorBitLocker" pattern="^[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}$" title="For example: 11AA223A-DC12-AA6F-9BB2-EW4211CC8809" size="36" /></td>
 						</tr>
 						<tr>	
 							<td>Klucz BitLocker</td>
-							<td><input type="text" value="'.$row['Klucz_BitLocker'].'" name="PC_KluczBitLocker" size="60" /></td>
+							<td><input type="text" value="'.$row['Klucz_BitLocker'].'" name="PC_KluczBitLocker" pattern="^\d{6}-\d{6}-\d{6}-\d{6}-\d{6}-\d{6}-\d{6}-\d{6}$" title="For example: 123456-098765-123456-098765-123456-098765-123456-098765" size="60" /></td>
 						</tr>
 						<tr>	
 							<td>Hasło</td>

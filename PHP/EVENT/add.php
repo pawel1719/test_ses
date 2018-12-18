@@ -15,7 +15,7 @@
 		unset($_POST['number']);
 		unset($_POST['comments']);
 		
-		header("Location: ../../homes.php?number=".$no."");
+		header("Location: ../../detailsOfComputer.php?number=".$no."");
 	}else{
 		
 		mysql_close();

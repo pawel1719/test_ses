@@ -1,5 +1,8 @@
 <?php
 
+include_once "config.php";
+
+
 function addCommentsForComputer($user, $computer, $comments){
 	
 	$date = date('Y-m-d H:i:s');
@@ -35,13 +38,18 @@ function dropDownListForTrueOrFalseToHTML( $name_label, $default ){
 	$HTML = "<select name=\"$name_label\">";
     $counter = 0;
 
+
+    if( strlen($default) < 1){
+		$HTML = $HTML."\n\t<option value=\"\" selected>Wybierz</option>";
+	}
+
 	while( $counter < count($tab) ){
 		
 		//SELECTED DEFAULT VALUE
-        if($tab[$counter]== $default){ 
+        if($tab[$counter]== $default && strlen($default) > 1){ 
             //return word Tak or Nie to the dropdown list 
-            if($tab[$counter]==1){
-            	$HTML = $HTML."\n\t<option value=\"$tab[$counter]\" selected>Tak</option>";
+            if($tab[$counter]==1) {
+               	$HTML = $HTML."\n\t<option value=\"$tab[$counter]\" selected>Tak</option>";
             }else{
             	$HTML = $HTML."\n\t<option value=\"$tab[$counter]\" selected>Nie</option>";
             }
@@ -72,6 +80,10 @@ function dropDownListForTableOperatingSystemToHTML($name_label, $default)
 	$HTML = "<select name=\"$name_label\">";
 
 
+	if( strlen($default) < 1){
+		$HTML = $HTML."\n\t<option value=\"\" selected>Wybierz</option>";
+	}
+
 	//Create list with date on DataBase
 	while( $row = mysql_fetch_assoc($query))
 	{
@@ -100,6 +112,10 @@ function dropDownListForTableStatusToHTML($name_label, $default){
 	$HTML = "\n<select name=\"$name_label\">";
 
 
+	if( strlen($default) < 1){
+		$HTML = $HTML."\n\t<option value=\"\" selected>Wybierz</option>";
+	}	
+
 	//Create list with date on DataBase
 	while( $row = mysql_fetch_assoc($query) )
 	{
@@ -125,6 +141,11 @@ function dropDownListForTableTypeToHTML($name_label, $default){
 	$sql = "SELECT typ.idTypeOfDevice 'ID_Type', typ.Type 'Type'FROM typeofdevice typ;";
 	$query = mysql_query($sql);
 	$HTML = "\n<select name=\"$name_label\">";
+
+
+	if( strlen($default) < 1){
+		$HTML = $HTML."\n\t<option value=\"\" selected>Wybierz</option>";
+	}
 
 	//Create list with date on DataBase
 	while( $row = mysql_fetch_assoc($query) )
@@ -154,6 +175,10 @@ function dropDownListForTableProducerToHTML($name_label, $default){
 	$HTML = "<select name=\"$name_label\">";
 
 
+	if( strlen($default) < 1){
+		$HTML = $HTML."\n\t<option value=\"\" selected>Wybierz</option>";
+	}
+
 	//Create list with date on DataBase
 	while( $row = mysql_fetch_assoc($query) )
 	{
@@ -180,6 +205,10 @@ function dropDownListForTablePersonToHTML($name_label, $default){
 	$query = mysql_query($sql);
 	$HTML = "<select name=\"$name_label\">";
 
+
+	if( strlen($default) < 1){
+		$HTML = $HTML."\n\t<option value=\"\" selected>Wybierz</option>";
+	}
 
 	//Create list with date on DataBase
 	while( $row = mysql_fetch_assoc($query) )
@@ -208,6 +237,10 @@ function dropDownListForTableModelToHTML($name_label, $default){
 	$query = mysql_query($sql);
 	$HTML = "<select name=\"$name_label\">";
 
+
+	if( strlen($default) < 1){
+		$HTML = $HTML."\n\t<option value=\"\" selected>Wybierz</option>";
+	}
 	
 	//Create list with date on DataBase
 	while( $row = mysql_fetch_assoc($query) )
@@ -256,6 +289,7 @@ function dropDownListRAMToHTML( $label, $default )
 //RETURS A LIST OF TYPICAL VALUES OF DISPLAYS FROM THE ARRAY
 function dropDownListDisplayToHTML( $label, $default )
 {
+	//arrays with standard values
 	$DISPLAYS = [
 		 '800×600'
 		,'1024×768'
@@ -279,7 +313,7 @@ function dropDownListDisplayToHTML( $label, $default )
 
 	//for empty values
 	if(strlen($default) < 1){
-		$HTML = $HTML."\n\t\t<option value=\"\" selected>Brak</option>";
+		$HTML = $HTML."\n\t\t<option value=\"\" selected>Wybierz</option>";
 	}
 	//values ​​from the array
 	for( $i = 0; count($DISPLAYS) > $i; $i++)
@@ -301,23 +335,26 @@ function dropDownListDisplayToHTML( $label, $default )
 //RETURNS A LIST OF TYPES OF HARD DISK
 function dropDownListTypeHardDiskToHTML( $label, $default )
 {
+	//arrays with standard values
+	$HARD_DRIVE = [
+			 'SSD'
+			,'HDD'];
+
 	$HTML = "<select name = \"$label\">";
 
-		if($default == "SSD"){ 
-			$HTML = $HTML."\n\t\t<option value = \"SSD\" selected>SSD</option>";
-		}else{ 
-			$HTML = $HTML."\n\t\t<option value = \"SSD\">SSD</option>"; }
-
-
-		if($default == "HDD"){ 
-			$HTML = $HTML."\n\t\t<option value = \"HDD\" selected>HDD</option>"; 
-		}else{ 
-			$HTML = $HTML."\n\t\t<option value = \"HDD\">HDD</option>"; }
-
-
-		if($default == ""){ 
-			$HTML = $HTML."\n\t\t<option value = \"\" selected>Brak</option>"; }
-
+	//for empty values
+	if(strlen($default) < 1){
+		$HTML = $HTML."\n\t\t<option value=\"\" selected>Wybierz</option>";
+	}
+	//values ​​from the array
+	for( $i = 0; count($HARD_DRIVE) > $i; $i++)
+	{
+		if($HARD_DRIVE[$i] == $default){
+			$HTML = $HTML."\n\t\t<option value=\"".$HARD_DRIVE[$i]."\" selected>".$HARD_DRIVE[$i]."</option>";
+		}else{
+			$HTML = $HTML."\n\t\t<option value=\"".$HARD_DRIVE[$i]."\">".$HARD_DRIVE[$i]."</option>";
+		}
+	}
 
 	$HTML = $HTML."</select>";
 
